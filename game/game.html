@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>坦克游戏试写</title>
+</head>
+<script src="js/pixi.js"></script>
+<script src="js/bump.js"></script>
+<script src="js/Event.js"></script>
+<script src="js/Wall.js"></script>
+<script src="js/Bullet.js"></script>
+<script src="js/Tank.js"></script>
+<script src="js/Enemy.js"></script>
+
+<body>
+    
+</body>
+<script>
+    const app = new PIXI.Application({
+		 width: 800,         // default: 800
+		 height: 800,
+	});
+	
+	//总配置 （后面可能要用）
+	app.config = {
+		tank:{
+			width:49,
+			height:49
+		},
+		enemy:{
+			width:49,
+			height:49
+		},
+		wall:{
+			width:50,
+			height:50
+		}
+	}
+	
+	app.bump = new Bump(PIXI);
+	
+
+    // The application will create a canvas element for you that you
+	// can then insert into the DOM
+	document.body.appendChild(app.view);
+
+	// load the texture we need bullet.png
+	app.loader.add('tank', 'assert/tank.png')
+			.add('bullet', 'assert/bullet.png')
+			.add('wall', 'assert/wall.gif')
+			.load((loader, resources) => {
+		// This creates a texture from a 'bunny.png' image
+		app.walls = [];
+		let wallSize = 50;
+		for(let i=0;i<100;i++){
+			let x = app.config.wall.width/2+i*app.config.wall.width%app.renderer.width;
+			let y = app.config.wall.height/2+parseInt((i*app.config.wall.width/app.renderer.width))*app.config.wall.height;
+			//let wall = new Wall(app,resources,x,y,wallSize,wallSize);
+			//app.walls.push(wall);
+		}
+		let key = keyboardDirection();
+		let tank = new Tank(app,resources,key);
+		app.enemys = [];
+		for(let i=200;i<300;i++){
+			let x = app.config.enemy.width/2+i*app.config.enemy.width%app.renderer.width;
+			let y = app.config.enemy.height/2+parseInt((i*app.config.enemy.width/app.renderer.width))*app.config.enemy.height;
+			let enemy = new Enemy(app,resources,x,y);
+			app.enemys.push(enemy);
+		}
+	
+		app.ticker.add(() => {
+			 tank.render();
+			 app.enemys.forEach(enemy=>{
+			 	enemy.render();
+			 })
+		});
+	  });
+	
+
+</script>
+</html>
